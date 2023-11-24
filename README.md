@@ -50,3 +50,25 @@ return {
 }
 ```
 **Note all paths should be using the "/" separator always.**
+
+# Attributes of a Module
+1. Name - This should be the same as the directory name where this _attr.flakes file is placed
+2. Description
+3. Websites - Array of websites
+4. Architecture - 32,64
+5. OS - Windows, Linux
+6. LuaVER - Version of Lua it works with
+7. ModVER - Version number of the Mod
+8. FileIndex - List of all files of the module. Each list item is a table with the following information:
+	1. File name - At the first index. This contains the file name and path by which to save the file in the indicated place.
+ 	2. "FILE"/"DIR" string at the second index to indicate this entry describes a file or a directory
+	3. At the third index, the place it has to be placed:
+		Places can be:
+		1. Module place - "MODULE"
+		2. Common DLL - "COMMON"
+	3. This entry describes where to copy the file from and is only present for "FILE" entries. This entry will be a array with 2 entries:
+		1. Type or source:
+			1. "WEB" - download from internet.
+		2. Source info. For WEB it is the direct URL of the file
+9. Dependencies and their versions
+10. Comment - Any additional information
