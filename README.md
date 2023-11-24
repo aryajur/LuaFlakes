@@ -11,6 +11,7 @@ Lua and modules binary storage and retrieval
 ```
 
 A Lua executable will be installed in the __Lua subdirectory.
+
 5. A module can be installed using a command:
 ```
 > lua LuaFlakes.lua install luasocket
