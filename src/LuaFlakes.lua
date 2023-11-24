@@ -80,7 +80,7 @@ local function getIndex()
 	if not isdir(ATTRREPO) then
 		os.execute([[git clone --no-checkout https://github.com/aryajur/]]..ATTRREPO..[[ >> log.txt]])
 	end
-	os.execute([[cd ]]..ATTRREPO..[[ && git checkout main -- index.lua >> ../log.txt]])
+	os.execute([[cd ]]..ATTRREPO..[[ && git fetch origin && git checkout origin/main -- index.lua >> ../log.txt]])
 	os.remove("log.txt")
 	return loadfile(ATTRREPO..[[/index.lua]])()
 end
