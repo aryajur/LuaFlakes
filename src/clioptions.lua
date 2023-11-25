@@ -1,5 +1,7 @@
 -- Command Line options parser setup module
 
+local os = os
+local print = print
 
 local M = {}
 package.loaded[...] = M
@@ -30,6 +32,11 @@ function new(parser)
 	commands.install:argument("module","Module name to be installed. Indicate version number default=latest"):args("1-2")
 	commands.install:flag("-d --dependencies","Flag to indicate whether to install dependencies automatically. Default=no")
 	commands.uninstall:argument("module","Module name to be uninstalled."):args(1)	-- Only 1 argument needed
+	
+	parser:flag("-v --version"):action(function()
+		print("LuaFlakes Version 1.23.11.24")
+		os.exit(0)
+	end)
 	
 	return true
 end

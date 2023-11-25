@@ -195,10 +195,17 @@ local function downloadFiles(modDIR,fileIndex)
 	for i = 1,#fileIndex do
 		if fileIndex[i][2] == "DIR" then
 			local path = fileIndex[i][1]
-			path:gsub("/",sep)
+			path = path:gsub("/",sep)
 			if fileIndex[i][3] == "MODULE" then
+				if not mdir and not isdir(modDIR) then
+					print("mkdir "..modDIR)
+					os.execute("mkdir "..modDIR)
+					mdir = true
+				end
+				print("mkdir "..modDIR..sep..path)
 				os.execute("mkdir "..modDIR..sep..path)
 			else	-- fileIndex[i][3] == "COMMON"
+				print("mkdir __Lua"..sep..path)
 				os.execute("mkdir __Lua"..sep..path)
 			end
 		else	-- fileIndex[i][2] == "FILE"
@@ -206,16 +213,19 @@ local function downloadFiles(modDIR,fileIndex)
 			local src = fileIndex[i][4]
 			-- only "WEB" sources for now
 			local path = fileIndex[i][1]
-			--path:gsub("/",sep)
+			--path = path:gsub("/",sep)
 			if fileIndex[i][3] == "MODULE" then
 				path = modDIR.."/"..path
 				if not mdir and not isdir(modDIR) then
+					print("mkdir "..modDIR)
 					os.execute("mkdir "..modDIR)
+					mdir = true
 				end
 			else	-- fileIndex[i][3] == "COMMON"
 				path = "__Lua/"..path
 			end
 			index[#index + 1] = path
+			print([[curl -o "]]..path..[[" ]]..src[2])			
 			os.execute([[curl -o "]]..path..[[" ]]..src[2])			
 		end
 	end
@@ -588,8 +598,10 @@ local function removeFiles(fileindex)
 	local dirs = {} 	-- to record all touched directories
 	for i = 1,#fileindex do
 		if fileindex[i][3]:find("/") then
-			if not tu.inArray(dirs,fileindex[i][3]:match("(.+)/[^/]+$")) then
-				dirs[#dirs + 1] = fileindex[i][3]:match("(.+)/[^/]+$")
+			local dchain = fileindex[i][3]
+			while dchain:find("/") and not tu.inArray(dirs,dchain:match("(.+)/[^/]+$")) do
+				dchain = dchain:match("(.+)/[^/]+$")
+				dirs[#dirs + 1] = dchain
 			end
 		end
 		print("Delete file: "..fileindex[i][3])
@@ -647,7 +659,7 @@ local function uninstall()
 	-- Build the file index
 	local fi = {}
 	for i = #attr.FileIndex,1,-1 do
-		print(attr.FileIndex[i][2][1],args.module)
+		--print(attr.FileIndex[i][2][1],args.module)
 		if attr.FileIndex[i][2][1] == args.module then
 			fi[#fi + 1] = attr.FileIndex[i]
 			table.remove(attr.FileIndex,i)
