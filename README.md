@@ -7,15 +7,26 @@ Lua and modules binary storage and retrieval
 3. Go to an empty directory where you want to install Lua and its modules.
 4. Run the LuaFlakes.lua file using the lua executable from the downloaded binary using the command:
 ```
-> lua LuaFlakes.lua init
+> path\to\downloaded\lua path\to\downloaded\LuaFlakes.lua init
 ```
 
 A Lua executable will be installed in the __Lua subdirectory.
 
 5. A module can be installed using a command:
 ```
-> lua LuaFlakes.lua install luasocket
+> path\to\downloaded\lua path\to\downloaded\LuaFlakes.lua install luasocket
 ```
+
+For a list of commands do:
+```
+> path\to\downloaded\lua path\to\downloaded\LuaFlakes.lua -h
+```
+
+To see version information do:
+```
+> path\to\downloaded\lua path\to\downloaded\LuaFlakes.lua -v
+```
+
 
 # Working
 The LuaFlakes script depends on the companion repository [LuaFlakes-attr](https://github.com/aryajur/LuaFlakes-attr) which stores all the information attributes for all the modules available through LuaFlakes.
