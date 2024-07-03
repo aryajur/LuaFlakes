@@ -4,15 +4,16 @@ Lua and modules binary storage and retrieval
 # Usage
 1. Download the binary from the release
 2. Extract the contents. It will have a Lua executable and a LuaFlakes.lua file
-3. Go to an empty directory where you want to install Lua and its modules.
-4. Run the LuaFlakes.lua file using the lua executable from the downloaded binary using the command:
+3. Make sure git is installed and accessible on the command line. Install from https://git-scm.com
+4. Go to an empty directory where you want to install Lua and its modules.
+5. Run the LuaFlakes.lua file using the lua executable from the downloaded binary using the command:
 ```
 > path\to\downloaded\lua path\to\downloaded\LuaFlakes.lua init
 ```
 
 A Lua executable will be installed in the __Lua subdirectory.
 
-5. A module can be installed using a command:
+6. A module can be installed using a command:
 ```
 > path\to\downloaded\lua path\to\downloaded\LuaFlakes.lua install luasocket
 ```
