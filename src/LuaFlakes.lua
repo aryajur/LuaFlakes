@@ -346,7 +346,7 @@ local function init()
 			print(i..". "..list[i])
 		end
 		verindex = tonumber(io.read())
-		if verindex < 1 or verindex < #list then
+		if verindex < 1 or verindex > #list then
 			return
 		end
 		config.lua = list[verindex]
