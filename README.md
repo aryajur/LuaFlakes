@@ -101,3 +101,15 @@ return {
 		2. Source info. For WEB it is the direct URL of the file
 9. Dependencies and their versions
 10. Comment - Any additional information
+
+As can be seen from the attributes above the intended structure of a setup should be like this:
+```
+- _attr.flakes
+- __Lua
+|- lua.exe
+|- lua53.dll
+|- luac.exe
+|- ... other common module files or dlls
+- lfs  (installed module ModDIR)
+|- ... module files
+```

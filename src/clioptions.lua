@@ -34,7 +34,7 @@ function new(parser)
 	commands.uninstall:argument("module","Module name to be uninstalled."):args(1)	-- Only 1 argument needed
 	
 	parser:flag("-v --version"):action(function()
-		print("LuaFlakes Version 1.24.07.04")
+		print("LuaFlakes Version 1.25.03.18")
 		os.exit(0)
 	end)
 	

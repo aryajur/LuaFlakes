@@ -1,5 +1,8 @@
 -- Luaflakes script to provide the functionality to manage a Lua setup
 
+-- TODO
+-- Allow _attr.flakes file to hold information about multiple versions. That way dependency right version can be downloaded
+
 require("submodsearcher")
 local tu = require("tableUtils")
 
@@ -76,6 +79,7 @@ local function copyFile(source,destPath,fileName,chunkSize,overwrite)
 	return true
 end
 
+-- This function returns the latest index.lua file from LuaFlakes attributes repository
 local function getIndex()
 	if not isdir(ATTRREPO) then
 		os.execute([[git clone --no-checkout https://github.com/aryajur/]]..ATTRREPO..[[ >> log.txt]])
@@ -117,12 +121,23 @@ local function getVerInfo(mod,OS,arch,luaver)
 			mods[#mods + 1] = {{},index[i]}
 		end
 	end
+	-- mods looks like this:
+	--[[
+		mods = {
+		{{},"all/all/5.1/tableUtils"},
+		{{},"all/all/5.2/tableUtils"},
+		{{},"all/all/5.3/tableUtils"},
+		{{},"all/all/5.4/tableUtils"},
+		}
+	]]
 	if #mods == 0 then
 		return nil,"Module "..mod.." not found."
 	end
 	--print("Found entries:",#mods)
 	for i = 1,#mods do
+		-- Checkout attributes of all modules in mods list
 		os.execute([[cd ]]..ATTRREPO..[[ && git fetch && git pull origin main:]]..mods[i][2]..[[ && git checkout main -- ]]..mods[i][2]..[[/_attr.flakes]])
+		-- Checkout the log of the module to trace the version checkins
 		os.execute([[cd ]]..ATTRREPO..[[ && git log --date=short ]]..mods[i][2]..[[/_attr.flakes >> ../log.txt]])
 		-- Open and parse log.txt
 		local hashes = {}
@@ -182,7 +197,7 @@ local function moduleverlist()
 		for j = 1,#ver[i][1] do
 			if not tu.inArray(verList,ver[i][1][j][3],function(one,two) return one[1] == two.ModVER and one[2] == two.OS and one[3] == two.Architecture and one[4] == two.LuaVER end) then
 				verList[#verList + 1] = {ver[i][1][j][3].ModVER,ver[i][1][j][3].OS,ver[i][1][j][3].Architecture,ver[i][1][j][3].LuaVER}
-				print(ver[i][1][j][3].OS,ver[i][1][j][3].Architecture,ver[i][1][j][3].LuaVER,verList[#verList])
+				print(ver[i][1][j][3].OS,ver[i][1][j][3].Architecture,ver[i][1][j][3].LuaVER,ver[i][1][j][3].ModVER)
 			end
 		end
 	end
@@ -197,13 +212,17 @@ local function downloadFiles(modDIR,fileIndex)
 			local path = fileIndex[i][1]
 			path = path:gsub("/",sep)
 			if fileIndex[i][3] == "MODULE" then
-				if not mdir and not isdir(modDIR) then
-					print("mkdir "..modDIR)
-					os.execute("mkdir "..modDIR)
-					mdir = true
+				if not mdir then
+					if modDIR and not isdir(modDIR) then
+						print("mkdir "..modDIR)
+						os.execute("mkdir "..modDIR)
+						mdir = modDIR..sep
+					else
+						mdir = ""
+					end
 				end
-				print("mkdir "..modDIR..sep..path)
-				os.execute("mkdir "..modDIR..sep..path)
+				print("mkdir "..mdir..path)
+				os.execute("mkdir "..mdir..path)
 			else	-- fileIndex[i][3] == "COMMON"
 				print("mkdir __Lua"..sep..path)
 				os.execute("mkdir __Lua"..sep..path)
@@ -215,12 +234,16 @@ local function downloadFiles(modDIR,fileIndex)
 			local path = fileIndex[i][1]
 			--path = path:gsub("/",sep)
 			if fileIndex[i][3] == "MODULE" then
-				path = modDIR.."/"..path
-				if not mdir and not isdir(modDIR) then
-					print("mkdir "..modDIR)
-					os.execute("mkdir "..modDIR)
-					mdir = true
+				if not mdir then
+					if modDIR and not isdir(modDIR) then
+						print("mkdir "..modDIR)
+						os.execute("mkdir "..modDIR)
+						mdir = modDIR..sep
+					else
+						mdir = ""
+					end
 				end
+				path = mdir..path
 			else	-- fileIndex[i][3] == "COMMON"
 				path = "__Lua/"..path
 			end
